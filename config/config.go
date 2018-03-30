@@ -20,9 +20,15 @@ func ReadFromFile(filename string) (ConfigData, error) {
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
-	err1 := json.Unmarshal(byteValue, &config)
-	if err1 != nil {
-		return config, err1
+	err = json.Unmarshal(byteValue, &config)
+	if err != nil {
+		return config, err
+	}
+
+	err = config.DecryptAll()
+	if err != nil {
+		var emptyConfig ConfigData
+		return emptyConfig, err
 	}
 
 	return config, nil
