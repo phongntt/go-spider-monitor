@@ -1,7 +1,6 @@
 package spiderutils
 
 import (
-	"encoding/base64"
 	"github.com/phongntt/crypto_helper"
 	"os"
 )
@@ -17,29 +16,19 @@ func GetMasterKey() string {
 }
 
 func SpiderEncrypt(text string) (string, error) {
-	byteText := []byte(text)
-	byteKey := []byte(GetMasterKey())
-
-	ciphertext, err := crypto_helper.Encrypt(byteText, byteKey)
+	ciphertext, err := crypto_helper.Encrypt_Base64(text, GetMasterKey())
 	if err != nil {
 		return "", err
 	}
 
-	encoded64 := base64.StdEncoding.EncodeToString(ciphertext)
-	return encoded64, nil
+	return ciphertext, nil
 }
 
 func SpiderDecrypt(text64 string) (string, error) {
-	byteKey := []byte(GetMasterKey())
-	byteText, err64 := base64.StdEncoding.DecodeString(text64)
-	if err64 != nil {
-		return "", err64
-	}
-
-	ciphertext, err := crypto_helper.Decrypt(byteText, byteKey)
+	ciphertext, err := crypto_helper.Decrypt_Base64(text64, GetMasterKey())
 	if err != nil {
 		return "", err
 	}
 
-	return string(ciphertext), nil
+	return ciphertext, nil
 }
