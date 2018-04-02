@@ -13,3 +13,7 @@ GO_SPIDER_ROOT
 
 # First thing to do
 - Unzip `shelper.zip` to the `shelper` directory (read # Directory structure part)
+
+# Before start this application
+- Enviroment vars:
+  -- GO_SPIDER_MASTERKEY --> master key to decrypt config data.
