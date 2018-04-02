@@ -43,12 +43,14 @@ func main() {
 	}
 
 	for scanner.Scan() {
-		fmt.Println("Read --> ", scanner.Text())
-
 		textLine := scanner.Text()
+		fmt.Println("Read --> ", textLine)
+
 		encTextLine, erre := crypto_helper.Encrypt_Base64(textLine, key)
 		errPanic(erre)
 
+		_, errw := outfile.WriteString(textLine + "\n")
+		errPanic(errw)
 		nwrite, errw := outfile.WriteString(encTextLine + "\n")
 		errPanic(errw)
 		fmt.Println("Write --> ", nwrite, "bytes")
