@@ -1,0 +1,33 @@
+{
+	"node_name": "IB_8_110",
+	"node_description": "ENC:2pQUCkpExzbpYXZ0wYZBqBY9RXcU7TYuQFEtLL9Zp0vq3r0U1H/0+cVd0R82ELcRe7VzORcttBhBnQOLGg==",
+	"node_type": "APP",
+	"check_tasks": [
+		{
+			"name": "tryopenport",
+			"command": "check-try-open-local-port 8080"
+		},
+		{
+			"name": "processid",
+			"command": "check-process-pid 7"
+		}
+	],
+	"check_expressions": [
+		{
+			"status": 0,
+			"expression": "tryopenport == 1 && processid == 0"
+		},
+		{
+			"status": 1,
+			"expression": "processid == 0"
+		},
+		{
+			"status": 2,
+			"expression": "processid == 1"
+		},
+		{
+			"status": 3,
+			"expression": "1 == 1"
+		}
+	]
+}
