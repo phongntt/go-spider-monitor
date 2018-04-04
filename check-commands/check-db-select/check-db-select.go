@@ -42,14 +42,14 @@ func main() {
 	defer println(RESULT_OUT_END)
 
 	if err != nil {
-		fmt.Println(err)
-		fmt.Println("Result = [FAIL -- Kiem tra select tren DB khong thanh cong.]")
+		////fmt.Println(err)
+		fmt.Println("1- WARNING")
 		os.Exit(1)
 		//return
 	}
 
 	fmt.Println(string(stdout))
 
-	fmt.Println("Result = [SUCCESS -- Cap nhat CMND THANH CONG]")
+	fmt.Println("0- OK")
 	// exit 0
 }

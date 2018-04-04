@@ -13,47 +13,38 @@ import (
 func main() {
 	//fileToRead, byteNum, errLimit, err := readFromArgs()
 	fileToRead, byteNum, errLimit, err := readFromArgs()
-	/*
-		if err != nil {
-			fmt.Println("Can't convert arguments to int.")
-			panic(err)
-		}
-	*/
-	errPanic(err)
+	if err != nil {
+		fmt.Println("3- UNKNOWN| Arguments error")
+		os.Exit(3)
+	}
 
-	fmt.Println("----- Process log file --")
+	println("----- Process log file --")
 	smallFile := createSmallFile(fileToRead, byteNum)
 
 	// log like this
 	// 06/03/2017 14:57:28,765 DEBUG: com.dtsc.helijobs.logger.debug - ERROR ON: AuthenticationCommand
 	// --> reg = "^[0-9/]{10} [0-9/:,]{8,} (DEBUG|ERROR)?: .* ERROR ON:"
 	errCount := readFileAndCountError(smallFile, "^[0-9/]{10} [0-9/:,]{8,} (DEBUG|ERROR)?: .* ERROR ON:")
-	fmt.Println("----- End: Process log file --")
-	fmt.Println("ErrCount: ", errCount)
+	println("----- End: Process log file --")
+	println("ErrCount: ", errCount)
 
 	os.Remove(smallFile)
 
 	if errCount > errLimit {
-		fmt.Println("ErrCount is over limit!")
+		fmt.Println("1- WARNING| ErrCount is over limit.")
 		os.Exit(1) // So loi vuot qua muc cho phep
 	}
 
-	fmt.Println("ErrCount is under limit!")
+	fmt.Println("0- OK| ErrCount is under limit")
 	os.Exit(0) // So loi nam trong gioi han cho phep
-}
-
-/*
-Từ file lớn, tạo ra file nhỏ hơn với dung lượng bằng dung lượng được gửi từ tham số
-*/
-func errPanic(err error) {
-	if err != nil {
-		panic(err)
-	}
 }
 
 func createSmallFile(fname string, byteNum int) string {
 	file, err := os.Open(fname)
-	errPanic(err)
+	if err != nil {
+		fmt.Println("3- UNKNOWN| Cannot open log file")
+		os.Exit(3)
+	}
 	defer file.Close()
 
 	stat, err := os.Stat(fname)
@@ -66,12 +57,18 @@ func createSmallFile(fname string, byteNum int) string {
 
 	buf := make([]byte, readByteNum)
 	_, err = file.ReadAt(buf, start)
-	errPanic(err)
+	if err != nil {
+		fmt.Println("3- UNKNOWN| Cannot read log file")
+		os.Exit(3)
+	}
 
 	// Timestamp part in small_<Timestamp>.log is Unix Millisecond
 	newfname := "small_" + strconv.FormatInt((time.Now().UnixNano()/1000000), 10) + ".log"
 	err1 := ioutil.WriteFile(newfname, buf, 0644)
-	errPanic(err1)
+	if err1 != nil {
+		fmt.Println("3- UNKNOWN| Cannot write a small log file")
+		os.Exit(3)
+	}
 
 	return newfname
 }
@@ -86,13 +83,13 @@ func readFromArgs() (string, int, int, error) {
 
 	byteNum, err := strconv.Atoi(byteNumStr)
 	if err != nil {
-		fmt.Println("Can't convert string to int.")
+		println("Can't convert string to int.")
 		return "", -1, -1, err
 	}
 
 	errLimit, err := strconv.Atoi(errLimitStr)
 	if err != nil {
-		fmt.Println("Can't convert string to int.")
+		println("Can't convert string to int.")
 		return "", -1, -1, err
 	}
 
@@ -101,7 +98,10 @@ func readFromArgs() (string, int, int, error) {
 
 func readFileAndCountError(filename string, errRegex string) int {
 	file, err := os.Open(filename)
-	errPanic(err)
+	if err != nil {
+		fmt.Println("3- UNKNOWN| Cannot read small log file")
+		os.Exit(3)
+	}
 	defer file.Close()
 
 	errCount := 0
@@ -114,7 +114,8 @@ func readFileAndCountError(filename string, errRegex string) int {
 	}
 
 	if err := scanner.Err(); err != nil {
-		errPanic(err)
+		fmt.Println("3- UNKNOWN| Cannot read small log file")
+		os.Exit(3)
 	}
 
 	return errCount
