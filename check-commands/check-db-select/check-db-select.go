@@ -29,7 +29,7 @@ func main() {
 
 	println("CHECK SELECT ON DB --> START")
 
-	app := SQL_HELPER_DIR + "/bin/sql.exe"
+	app := SQL_HELPER_DIR + "/bin/sql"
 	arg0 := "-L"       // exit (exit code = 1) if Logon fail
 	arg1 := os.Args[1] //os.Getenv("ENV_GO_CHECK_ON_DB")
 	arg2 := "@" + SQL_HELPER_DIR + "/script/check-db-online.sql"
@@ -43,13 +43,13 @@ func main() {
 
 	if err != nil {
 		////fmt.Println(err)
-		fmt.Println("1- WARNING")
+		fmt.Print("1- WARNING")
 		os.Exit(1)
 		//return
 	}
 
-	fmt.Println(string(stdout))
+	println(string(stdout))
 
-	fmt.Println("0- OK")
+	fmt.Print("0- OK")
 	// exit 0
 }

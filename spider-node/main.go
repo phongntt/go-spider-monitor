@@ -3,13 +3,20 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"time"
+
 	"github.com/phongntt/go-spider-monitor/config"
 	"github.com/phongntt/go-spider-monitor/spiderutils"
-	"io/ioutil"
 )
 
 const NO_RESULT_INT = -999999
 const NO_RESULT_STR = "[no_result]"
+const STATUS_FILE_PATH = "../logs/"
+const STATUS_FILE_PREFIX = "status"
+const STATUS_FILE_EXT = ".json"
+const FILENAME_SEPERATOR = "_"
 
 type CheckTaskResult struct {
 	Name       string `json:"name"`
@@ -31,14 +38,17 @@ func emptyResultFromCheckTask(checkTask config.CheckTask) CheckTaskResult {
 }
 
 func main() {
-	confFile := "./conf/config.json"
+	confFile := "../conf/config.json"
 
 	config, err := config.ReadFromFile(confFile)
 	if err != nil {
-		panic(err)
+		fmt.Print("3- UNKNOWN| Cannot read config file")
+		println()
+		os.Exit(3)
 	}
 
-	fmt.Println(config)
+	// DEBUG
+	////println(config)
 
 	results := runTasks(config.CheckTasks)
 	fmt.Println(results)
@@ -47,13 +57,33 @@ func main() {
 	println("==== RESULT ====")
 	fmt.Println(status)
 
+	writeStatusToFile(status)
+}
+
+func writeStatusToFile(status StatusSum) {
 	statusBytes, err := json.Marshal(status)
 	if err != nil {
-		panic(err)
+		fmt.Print("3- UNKNOWN| Cannot convert status to JSON format")
+		println()
+		os.Exit(3)
 	}
-	err = ioutil.WriteFile("./status.json", statusBytes, 0644)
+
+	timepart := time.Now().Format("2006-01-02_150405.999999")
+	statusFilename1 := STATUS_FILE_PATH + STATUS_FILE_PREFIX + STATUS_FILE_EXT
+	statusFilename2 := STATUS_FILE_PATH + STATUS_FILE_PREFIX + FILENAME_SEPERATOR + timepart + STATUS_FILE_EXT
+
+	err = ioutil.WriteFile(statusFilename1, statusBytes, 0644)
 	if err != nil {
-		panic(err)
+		fmt.Print("3- UNKNOWN| Cannot write status file")
+		println()
+		os.Exit(3)
+	}
+
+	err = ioutil.WriteFile(statusFilename2, statusBytes, 0644)
+	if err != nil {
+		fmt.Print("3- UNKNOWN| Cannot write status file")
+		println()
+		os.Exit(3)
 	}
 }
 

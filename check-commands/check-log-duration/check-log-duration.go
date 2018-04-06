@@ -12,20 +12,20 @@ func main() {
 
 	checkDuration, err := time.ParseDuration(strChekDuration)
 	if err != nil {
-		fmt.Println("3- UNKNOWN| Argument 'duration' is not valid.")
+		fmt.Print("3- UNKNOWN| Argument 'duration' is not valid.")
 		os.Exit(3)
 	}
 
 	info, err := os.Stat(fileName)
 	if err != nil {
-		fmt.Println("3- UNKNOWN| Can't get log-file info.")
+		fmt.Print("3- UNKNOWN| Can't get log-file info.")
 		os.Exit(3)
 	}
 
 	n := time.Now()
 
-	println(fmt.Sprint("Now: ", n))
-	println(fmt.Sprint("File time: ", info.ModTime()))
+	println(fmt.Sprintln("Now: ", n))
+	println(fmt.Sprintln("File time: ", info.ModTime()))
 
 	duration := n.Sub(info.ModTime())
 	println("Duration: ", duration)
@@ -33,10 +33,10 @@ func main() {
 
 	//if n.After(info.ModTime().Add(checkDuration*time.Second)) {
 	if n.After(info.ModTime().Add(checkDuration)) {
-		fmt.Println("1- WARNING| File have not been edited for too long.")
+		fmt.Print("1- WARNING| File have not been edited for too long.")
 		os.Exit(1)
 	}
 
-	fmt.Println("0- OK| File duration OK.")
+	fmt.Print("0- OK| File duration OK.")
 	os.Exit(0)
 }

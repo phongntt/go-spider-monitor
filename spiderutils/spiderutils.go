@@ -67,8 +67,10 @@ func RunCheckCommand(commandStr string) (int, string) {
 	}
 
 	if err != nil {
-		println("Check command running fail")
-		return 1, "FAIL Check command running fail"
+		////println("Check command running fail")
+		////println(err)
+		////println(string(stdout))
+		return 1, string(stdout) ////"FAIL Check command running fail"
 	}
 
 	return 0, string(stdout)

@@ -9,6 +9,7 @@ GO_SPIDER_ROOT
         check-* --> checking commands
     shelper --> SHelper in here
     conf --> for config files
+    logs --> for log file (create manually)
 ```
 
 # First thing to do

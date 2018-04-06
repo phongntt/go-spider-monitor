@@ -37,7 +37,7 @@ func main() {
 	//processId := 3187
 	processId, err := strconv.Atoi(s)
 	if err != nil {
-		fmt.Println("1- WARNING| Invalid PID arg.")
+		fmt.Print("1- WARNING| Invalid PID arg.")
 		os.Exit(1)
 	}
 
@@ -48,10 +48,10 @@ func main() {
 	//fmt.Println(errMsg)
 
 	if isSucc != 0 {
-		fmt.Println("1- WARNING| Can't find process.")
+		fmt.Print("1- WARNING| Can't find process.")
 		os.Exit(1)
 	}
 
-	fmt.Println("0- SUCCESS| Process is exists.")
+	fmt.Print("0- SUCCESS| Process is exists.")
 	os.Exit(0)
 }

@@ -14,7 +14,7 @@ func main() {
 	//fileToRead, byteNum, errLimit, err := readFromArgs()
 	fileToRead, byteNum, errLimit, err := readFromArgs()
 	if err != nil {
-		fmt.Println("3- UNKNOWN| Arguments error")
+		fmt.Print("3- UNKNOWN| Arguments error")
 		os.Exit(3)
 	}
 
@@ -31,18 +31,18 @@ func main() {
 	os.Remove(smallFile)
 
 	if errCount > errLimit {
-		fmt.Println("1- WARNING| ErrCount is over limit.")
+		fmt.Print("1- WARNING| ErrCount is over limit.")
 		os.Exit(1) // So loi vuot qua muc cho phep
 	}
 
-	fmt.Println("0- OK| ErrCount is under limit")
+	fmt.Print("0- OK| ErrCount is under limit")
 	os.Exit(0) // So loi nam trong gioi han cho phep
 }
 
 func createSmallFile(fname string, byteNum int) string {
 	file, err := os.Open(fname)
 	if err != nil {
-		fmt.Println("3- UNKNOWN| Cannot open log file")
+		fmt.Print("3- UNKNOWN| Cannot open log file")
 		os.Exit(3)
 	}
 	defer file.Close()
@@ -58,7 +58,7 @@ func createSmallFile(fname string, byteNum int) string {
 	buf := make([]byte, readByteNum)
 	_, err = file.ReadAt(buf, start)
 	if err != nil {
-		fmt.Println("3- UNKNOWN| Cannot read log file")
+		fmt.Print("3- UNKNOWN| Cannot read log file")
 		os.Exit(3)
 	}
 
@@ -66,7 +66,7 @@ func createSmallFile(fname string, byteNum int) string {
 	newfname := "small_" + strconv.FormatInt((time.Now().UnixNano()/1000000), 10) + ".log"
 	err1 := ioutil.WriteFile(newfname, buf, 0644)
 	if err1 != nil {
-		fmt.Println("3- UNKNOWN| Cannot write a small log file")
+		fmt.Print("3- UNKNOWN| Cannot write a small log file")
 		os.Exit(3)
 	}
 
@@ -99,7 +99,7 @@ func readFromArgs() (string, int, int, error) {
 func readFileAndCountError(filename string, errRegex string) int {
 	file, err := os.Open(filename)
 	if err != nil {
-		fmt.Println("3- UNKNOWN| Cannot read small log file")
+		fmt.Print("3- UNKNOWN| Cannot read small log file")
 		os.Exit(3)
 	}
 	defer file.Close()
@@ -114,7 +114,7 @@ func readFileAndCountError(filename string, errRegex string) int {
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Println("3- UNKNOWN| Cannot read small log file")
+		fmt.Print("3- UNKNOWN| Cannot read small log file")
 		os.Exit(3)
 	}
 
@@ -126,8 +126,8 @@ func isErrLine(textLine, errRegex string) bool {
 	isThisErrorLine := regErrFilter.MatchString(textLine)
 
 	if isThisErrorLine {
-		fmt.Println("---", textLine)
-		fmt.Println("-----> THIS IS ERROR LINE <-----")
+		println("---", textLine)
+		println("-----> THIS IS ERROR LINE <-----")
 	} /*else {
 		fmt.Println("-----> ------- <-----")
 	}*/
