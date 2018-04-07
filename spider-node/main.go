@@ -70,7 +70,9 @@ func writeStatusToFile(status StatusSum) {
 
 	timepart := time.Now().Format("2006-01-02_150405.999999")
 	statusFilename1 := STATUS_FILE_PATH + STATUS_FILE_PREFIX + STATUS_FILE_EXT
-	statusFilename2 := STATUS_FILE_PATH + STATUS_FILE_PREFIX + FILENAME_SEPERATOR + timepart + STATUS_FILE_EXT
+	statusFilename2 := STATUS_FILE_PATH + STATUS_FILE_PREFIX +
+		FILENAME_SEPERATOR + status.Status +
+		FILENAME_SEPERATOR + timepart + STATUS_FILE_EXT
 
 	err = ioutil.WriteFile(statusFilename1, statusBytes, 0644)
 	if err != nil {
