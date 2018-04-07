@@ -12,8 +12,9 @@ GO_SPIDER_ROOT
     logs --> for log file (create manually)
 ```
 
-# First thing to do
+# First thing to do for Spider-Node
 - Unzip `shelper.zip` to the `shelper` directory (read # Directory structure part)
+- Copy `JRE` directory to `shelper`
 
 # Before start this application
 - Enviroment vars:
