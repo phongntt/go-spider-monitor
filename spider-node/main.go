@@ -42,6 +42,7 @@ func main() {
 
 	config, err := config.ReadFromFile(confFile)
 	if err != nil {
+		println(fmt.Sprintln(err))
 		fmt.Print("3- UNKNOWN| Cannot read config file")
 		println()
 		os.Exit(3)

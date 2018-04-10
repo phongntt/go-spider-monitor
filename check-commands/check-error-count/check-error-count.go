@@ -42,6 +42,7 @@ func main() {
 func createSmallFile(fname string, byteNum int) string {
 	file, err := os.Open(fname)
 	if err != nil {
+		print(fmt.Sprintln(err))
 		fmt.Print("3- UNKNOWN| Cannot open log file")
 		os.Exit(3)
 	}
@@ -58,6 +59,7 @@ func createSmallFile(fname string, byteNum int) string {
 	buf := make([]byte, readByteNum)
 	_, err = file.ReadAt(buf, start)
 	if err != nil {
+		print(fmt.Sprintln(err))
 		fmt.Print("3- UNKNOWN| Cannot read log file")
 		os.Exit(3)
 	}
@@ -66,6 +68,7 @@ func createSmallFile(fname string, byteNum int) string {
 	newfname := "small_" + strconv.FormatInt((time.Now().UnixNano()/1000000), 10) + ".log"
 	err1 := ioutil.WriteFile(newfname, buf, 0644)
 	if err1 != nil {
+		print(fmt.Sprintln(err1))
 		fmt.Print("3- UNKNOWN| Cannot write a small log file")
 		os.Exit(3)
 	}
@@ -99,21 +102,41 @@ func readFromArgs() (string, int, int, error) {
 func readFileAndCountError(filename string, errRegex string) int {
 	file, err := os.Open(filename)
 	if err != nil {
+		print(fmt.Sprintln(err))
 		fmt.Print("3- UNKNOWN| Cannot read small log file")
 		os.Exit(3)
 	}
 	defer file.Close()
 
+	/*
+		errCount := 0
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			////fmt.Println(scanner.Text())
+			if isErrLine(scanner.Text(), errRegex) {
+				errCount++
+			}
+		}
+
+		if err := scanner.Err(); err != nil {
+			print(fmt.Sprintln(err))
+			fmt.Print("3- UNKNOWN| Cannot read small log file")
+			os.Exit(3)
+		}
+	*/
+
+	println("Begin count err-line num")
 	errCount := 0
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		////fmt.Println(scanner.Text())
-		if isErrLine(scanner.Text(), errRegex) {
+	reader := bufio.NewReaderSize(file, 500000)
+	for byteLine, _, err := reader.ReadLine(); err == nil; byteLine, _, err = reader.ReadLine() {
+		////println(string(byteLine))
+		if isErrLine(string(byteLine), errRegex) {
 			errCount++
 		}
 	}
 
-	if err := scanner.Err(); err != nil {
+	if err != nil {
+		print(fmt.Sprintln(err))
 		fmt.Print("3- UNKNOWN| Cannot read small log file")
 		os.Exit(3)
 	}
