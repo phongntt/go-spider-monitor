@@ -110,10 +110,22 @@ func runOneTask(task config.CheckTask) CheckTaskResult {
 func processCheckResult(conf config.ConfigData, checkResults []CheckTaskResult) StatusSum {
 	status := StatusSum{conf.NodeName, conf.NodeType, NO_RESULT_STR, NO_RESULT_INT, checkResults}
 
+	// Add checking results to params
 	params := make(map[string]int)
 	for _, checkResult := range checkResults {
 		params[checkResult.Name] = checkResult.ResultCode
 	}
+
+	// Add date time to param
+	dNow := time.Now()
+	year, month, day := dNow.Date()
+	hour, min, sec := dNow.Clock()
+	params["year"] = year
+	params["month"] = int(month)
+	params["day"] = day
+	params["hour"] = hour
+	params["minute"] = min
+	params["second"] = sec
 
 	statusValueMap := make(map[int]bool)
 	for _, statusExpr := range conf.CheckExpressions {
