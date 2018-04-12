@@ -17,6 +17,7 @@ const STATUS_FILE_PATH = "../logs/"
 const STATUS_FILE_PREFIX = "status"
 const STATUS_FILE_EXT = ".json"
 const FILENAME_SEPERATOR = "_"
+const CONF_PATH = "../conf"
 
 type CheckTaskResult struct {
 	Name       string `json:"name"`
@@ -38,7 +39,42 @@ func emptyResultFromCheckTask(checkTask config.CheckTask) CheckTaskResult {
 }
 
 func main() {
-	confFile := "../conf/config.json"
+	println("Start >>>")
+
+	allConfig, err := config.LoadAllConfig(CONF_PATH)
+	if err != nil {
+		println("Cannot load config files from config Dir")
+	}
+
+	if len(allConfig) == 0 {
+		fmt.Println("1- WARNING| None config file")
+		os.Exit(1)
+	}
+
+	for confName, config := range allConfig {
+		println(fmt.Sprintf("---- RUN FOR: %s -----", confName))
+
+		if config.IsErrorConfig() {
+			println("3- UNKNOWN| Cannot read config `%s`", confName)
+			println()
+		} else {
+			results := runTasks(config.CheckTasks)
+			fmt.Println(results)
+
+			status := processCheckResult(config, results)
+			println("==== RESULT ====")
+			fmt.Println(status)
+
+			writeStatusToFile(status, confName)
+
+			println("\n")
+		}
+	}
+}
+
+/*
+func main() {
+	confFile := CONF_PATH + "/config.json"
 
 	config, err := config.ReadFromFile(confFile)
 	if err != nil {
@@ -60,8 +96,9 @@ func main() {
 
 	writeStatusToFile(status)
 }
+*/
 
-func writeStatusToFile(status StatusSum) {
+func writeStatusToFile(status StatusSum, confName string) {
 	statusBytes, err := json.Marshal(status)
 	if err != nil {
 		fmt.Print("3- UNKNOWN| Cannot convert status to JSON format")
@@ -70,9 +107,10 @@ func writeStatusToFile(status StatusSum) {
 	}
 
 	timepart := time.Now().Format("2006-01-02_150405.999999")
-	statusFilename1 := STATUS_FILE_PATH + STATUS_FILE_PREFIX + STATUS_FILE_EXT
-	statusFilename2 := STATUS_FILE_PATH + STATUS_FILE_PREFIX +
-		FILENAME_SEPERATOR + status.Status +
+	statusFilename1 := STATUS_FILE_PATH + confName + FILENAME_SEPERATOR +
+		STATUS_FILE_PREFIX + STATUS_FILE_EXT
+	statusFilename2 := STATUS_FILE_PATH + confName + FILENAME_SEPERATOR +
+		STATUS_FILE_PREFIX + FILENAME_SEPERATOR + status.Status +
 		FILENAME_SEPERATOR + timepart + STATUS_FILE_EXT
 
 	err = ioutil.WriteFile(statusFilename1, statusBytes, 0644)

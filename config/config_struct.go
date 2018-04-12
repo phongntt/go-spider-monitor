@@ -5,6 +5,9 @@ import (
 	"strings"
 )
 
+const NONAME = "[NONE]"
+const ERROR_TYPE = "ERROR"
+
 type CheckTask struct {
 	Name    string `json:"name"`
 	Command string `json:"command"`
@@ -21,6 +24,14 @@ type ConfigData struct {
 	NodeType         string            `json:"node_type"`
 	CheckTasks       []CheckTask       `json:"check_tasks"`
 	CheckExpressions []CheckExpression `json:"check_expressions"`
+}
+
+func (c *ConfigData) IsErrorConfig() bool {
+	return (c.NodeName == NONAME && c.NodeType == ERROR_TYPE)
+}
+
+func createErrorConfig() ConfigData {
+	return ConfigData{NONAME, "", ERROR_TYPE, nil, nil}
 }
 
 func processAndDecryptText(text string) (string, error) {
